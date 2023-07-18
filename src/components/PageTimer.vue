@@ -1,6 +1,6 @@
 <template>
   <p>
-    你在 <strong class="text-strong">{{ pageTime }}</strong> 秒前打开本页面
+    당신은 <strong class="text-strong">{{ pageTime }}</strong> 몇 초 전에 이 페이지 열기
   </p>
 </template>
 
@@ -28,7 +28,7 @@ export default {
     this.clearPageTimer()
   },
 
-  beforeDestroy() {
+  beforeUnmounted() {
     this.clearPageTimer()
   },
 

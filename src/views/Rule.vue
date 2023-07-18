@@ -63,8 +63,8 @@
 </template>
 
 <script>
-import PageTimer from '../components/PageTimer'
-import PageRouteInfo from '../components/PageRouteInfo'
+import PageTimer from '../components/PageTimer.vue'
+import PageRouteInfo from '../components/PageRouteInfo.vue'
 
 export default {
   name: 'Rule',

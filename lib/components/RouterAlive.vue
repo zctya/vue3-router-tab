@@ -1,41 +1,41 @@
 <template>
   <div class="router-alive">
-    <transition
-      v-bind="pageTrans"
-      appear
-      @after-enter="onTrans"
-      @after-leave="onTrans"
+    <router-view
+      ref="page"
+      :class="pageClass"
+      v-slot="{ Component }"
     >
-      <keep-alive :max="max">
-        <router-view
-          v-if="alive && !onRefresh"
-          ref="page"
-          :key="key"
-          :class="pageClass"
-          v-on="hooks"
-          @page-loaded="onPageLoaded"
-        />
-      </keep-alive>
-    </transition>
-
-    <transition
-      v-bind="pageTrans"
-      appear
-      @after-enter="onTrans"
-      @after-leave="onTrans"
-    >
-      <router-view
-        v-if="!alive && !onRefresh"
-        ref="page"
-        :key="key"
-        :class="pageClass"
-      />
-    </transition>
+      <transition
+        v-bind="pageTrans"
+        appear
+        @after-enter="onTrans('enter')"
+        @after-leave="onTrans('leave')"
+      >
+        <keep-alive v-if="alive" ref="keepAlive" :max="max" :exclude="keepAliveExclude">
+          <component
+            v-if="!onRefresh"
+            :is="Component"
+            :key="key"
+            ref="alive"
+            @vue:created="pageHookCreated"
+            @vue:mounted="pageHookMounted"
+            @vue:activated="pageHookActivated"
+            @vue:deactivated="pageHookDeactivated"
+            @vue:unmounted="pageHookUnmounted"
+            @page-loaded="onPageLoaded"
+          />
+        </keep-alive>
+        <component v-else :is="Component" ref="alive" />
+      </transition>
+    </router-view>
   </div>
 </template>
 
 <script>
-import { remove, mapGetters, getTransOpt, getCtorId } from '../util'
+import { inject } from 'vue'
+import { viewDepthKey } from 'vue-router'
+
+import { mapGetters, getTransOpt, getCtorId } from '../util'
 import RouteMatch from '../util/RouteMatch'
 
 // 页面监听钩子
@@ -44,7 +44,7 @@ const PAGE_HOOKS = [
   'mounted',
   'activated',
   'deactivated',
-  'destroyed'
+  'unmounted'
 ]
 
 /**
@@ -73,7 +73,7 @@ export default {
       default: false
     },
 
-    // 最大缓存数，0 则不限制
+    // 최대 캐시 수, 0은 무제한입니다.
     max: {
       type: Number,
       default: 0
@@ -94,11 +94,18 @@ export default {
     // 过渡效果
     transition: {
       type: [String, Object]
+    },
+
+    routeIndex: {
+      type: Number,
+      default: null
     }
   },
 
+  emits: ['ready', 'change'],
+  
   data() {
-    // 缓存记录
+    // 캐시 레코드
     this.cache = {}
 
     return {
@@ -106,10 +113,14 @@ export default {
       routeMatch: new RouteMatch(this),
 
       // 页面路由索引
-      routeIndex: this.getRouteIndex(),
+      // routeIndex: inject(viewDepthKey),
+      // routeIndex: this.routeIndexProps,
 
       // 是否正在更新
-      onRefresh: false
+      onRefresh: false,
+
+      keepAliveExclude: null,
+      keepAliveExcludeIndex: 1
     }
   },
 
@@ -128,7 +139,7 @@ export default {
     // 监听子页面钩子
     hooks() {
       return PAGE_HOOKS.reduce((events, hook) => {
-        events['hook:' + hook] = () => this.pageHook(hook)
+        events['vue:' + hook] = () => this.pageHook(hook)
         return events
       }, {})
     },
@@ -143,7 +154,7 @@ export default {
     // 监听路由
     $route: {
       handler($route, old) {
-        // 组件就绪
+        // 구성 요소 준비
         if (!old) this.$emit('ready', this)
 
         if (!$route.matched.length) return
@@ -156,7 +167,7 @@ export default {
           vm: cacheVM
         } = cacheItem
 
-        // 不复用且路由改变则清理组件缓存
+        // 재사용되지 않고 경로가 변경되는 경우 구성 요소 캐시를 정리합니다.
         if (cacheAlivePath && !reusable && cacheAlivePath !== alivePath) {
           cacheAlivePath = ''
           this.refresh(key)
@@ -185,66 +196,40 @@ export default {
     }
   },
 
-  mounted() {
-    // 获取 keepAlive 组件实例
-    this.$refs.alive = this._vnode.children[0].child._vnode.componentInstance
-  },
-
   // 销毁后清理
-  destroyed() {
+  unmounted() {
     this.cache = null
     this.routeMatch = null
     this._match = null
-    this.$refs.alive = null
   },
 
   methods: {
-    // 获取页面路由索引
-    getRouteIndex() {
-      let cur = this
-      let depth = -1 // 路由深度
-
-      while (cur && depth < 0) {
-        const { data } = cur.$vnode || {}
-        if (data && data.routerView) {
-          depth = data.routerViewDepth
-        } else {
-          cur = cur.$parent
-        }
-      }
-
-      return depth + 1
-    },
-
     // 移除缓存
-    remove(key = this.key) {
+    async remove(key = this.key) {
       const $alive = this.$refs.alive
 
       if (!$alive) return
 
       const cacheItem = this.cache[key]
-      const { cache, keys } = $alive
 
-      // 销毁缓存组件实例，清理 RouterAlive 缓存记录
+      // 캐시 구성 요소 인스턴스를 삭제하고 RouterAlive 캐시 레코드를 지웁니다.
       if (cacheItem) {
-        cacheItem.vm.$destroy()
+        // console.log('remove', key, cacheItem.vm.$.vnode.type.name, this.$refs.keepAlive.$.__v_cache)
+        const excludeName = cacheItem.vm.$.vnode.type.name
+        // cacheItem.vm.$.vnode.type.name = excludeName
+        // cacheItem.vm.resetComponent()
+        // this.keepAliveExclude = excludeName
         cacheItem.vm = null
         this.cache[key] = null
+
+        // this.$nextTick(() => {
+        //   this.keepAliveExclude = excludeName
+        // })
+
+        // setTimeout(() => {
+        //   this.keepAliveExclude = null
+        // }, 100)
       }
-
-      // 清理 keepAlive 缓存记录
-      Object.entries(cache).find(([id, item]) => {
-        const vm = item?.componentInstance
-        if (vm?.$vnode?.data?.key === key) {
-          // 销毁组件实例
-          vm.$destroy()
-
-          cache[id] = null
-          remove(keys, id)
-
-          return true
-        }
-      })
     },
 
     // 刷新
@@ -271,7 +256,7 @@ export default {
     },
 
     // 页面创建
-    'pageHook:created'() {
+    pageHookCreated() {
       this.cache[this.key] = {
         alivePath: this.alivePath,
         fullPath: this.$route.fullPath
@@ -279,19 +264,27 @@ export default {
     },
 
     // 页面挂载
-    'pageHook:mounted'() {
-      this.cache[this.key].vm = this.$refs.page
+    pageHookMounted() {
+      if (this.cache[this.key]) {
+        this.cache[this.key].vm = this.$refs.alive
 
-      // 重置初始滚动位置
-      this.resetScrollPosition()
+        // 重置初始滚动位置
+        this.resetScrollPosition()
+      } else {
+        this.cache[this.key] = {
+          alivePath: this.alivePath,
+          fullPath: this.$route.fullPath,
+          vm: this.$refs.alive
+        }
+      }
     },
 
     // 页面激活
-    'pageHook:activated'() {
+    pageHookActivated(target) {
       const pageVm = this.$refs.page
 
       // 热重载更新
-      if (this.checkHotReloading()) return
+      if (this.checkHotReloading(target, 'activated')) return
 
       // 嵌套路由缓存导致页面不匹配时强制更新
       if (this.nestForceUpdate) {
@@ -300,19 +293,19 @@ export default {
       }
 
       // 还原滚动位置
-      this.restoreScrollPosition()
+      this.restoreScrollPosition(target)
     },
 
     // 页面失活
-    'pageHook:deactivated'() {
-      if (this.checkHotReloading()) return
+    pageHookDeactivated(target) {
+      if (this.checkHotReloading(target, 'deactivated')) return
 
       // 保存滚动位置
-      this.saveScrollPosition()
+      this.saveScrollPosition(target)
     },
 
     // 页面销毁后清理 cache
-    async 'pageHook:destroyed'() {
+    async pageHookUnmounted() {
       await this.$nextTick()
 
       if (!this.cache) return
@@ -327,7 +320,7 @@ export default {
     },
 
     // 页面过渡后结束刷新状态
-    onTrans() {
+    onTrans(from) {
       if (this.onRefresh) {
         this.onRefresh = false
         this.$emit('change', 'create', this.routeMatch)
@@ -355,11 +348,10 @@ export default {
       return (this._match = new RouteMatch(this, $route))
     },
 
-    // 检测热重载
-    checkHotReloading() {
-      const pageVm = this.$refs.page
-      const lastCid = pageVm._lastCtorId
-      const cid = (pageVm._lastCtorId = getCtorId(pageVm))
+    // 핫 리로드 감지
+    checkHotReloading(target, from) {
+      const lastCid = target._lastCtorId
+      const cid = (target._lastCtorId = getCtorId(target))
 
       // 热重载更新
       if (lastCid && lastCid !== cid) {
@@ -377,14 +369,10 @@ export default {
         : this.$el.querySelector(selector)
     },
 
-    // 保存滚动位置
-    saveScrollPosition() {
-      const pageVm = this.$refs.page
-
-      if (!pageVm) return
-
-      // 页面内部配置的滚动元素
-      let { pageScroller } = pageVm.$vnode.componentOptions.Ctor.options
+    // 스크롤 위치 저장
+    saveScrollPosition(target) {
+      // 페이지 내부에 구성된 스크롤 요소
+      let pageScroller = target.$options.pageScroller
 
       if (typeof pageScroller === 'string' && pageScroller.length) {
         pageScroller = pageScroller.split(/\s?,\s?/)
@@ -394,16 +382,16 @@ export default {
         pageScroller = []
       }
 
-      // 默认保存页面根节点位置
+      // 기본적으로 페이지 루트 노드 위치 저장
       pageScroller.push('.' + this.pageClass)
 
-      // 添加全局的滚动元素配置
-      // 组件外部选择器使用 $ 前缀区分
+      // 전역 스크롤 요소 구성 추가
+      // 구성 요소 외부 선택자는 $ 접두사를 사용하여 구분됩니다.
       if (this.pageScroller) {
         pageScroller.push('$' + this.pageScroller)
       }
 
-      // 记录位置
+      // 기록 위치
       const position = pageScroller.reduce((pos, selector) => {
         const el = this.getScroller(selector)
 
@@ -417,26 +405,27 @@ export default {
         return pos
       }, {})
 
-      pageVm._pageScrollPosition = position
+      target._pageScrollPosition = position
     },
 
-    // 还原滚动位置
-    restoreScrollPosition() {
-      const pageVm = this.$refs.page
-      const position = pageVm?._pageScrollPosition
+    // 스크롤 위치 복원
+    restoreScrollPosition(target) {
+      const position = target?._pageScrollPosition
 
       if (!position) return
 
       Object.entries(position).forEach(([selector, pos]) => {
         const el = this.getScroller(selector)
         if (el) {
-          el.scrollLeft = pos.left
-          el.scrollTop = pos.top
+          this.$nextTick(() => {
+            el.scrollLeft = pos.left
+            el.scrollTop = pos.top
+          })
         }
       })
     },
 
-    // 重置全局滚动位置
+    // 전역 스크롤 위치 재설정
     resetScrollPosition() {
       if (!this.pageScroller) return
 
@@ -448,10 +437,10 @@ export default {
       el.scrollTop = 0
     },
 
-    // 页面数据加载成功
+    // 페이지 데이터가 성공적으로 로드되었습니다.
     async onPageLoaded() {
       await this.$nextTick()
-      // 页面数据加载成功后还原滚动位置
+      // 페이지 데이터가 성공적으로 로드된 후 스크롤 위치 복원
       this.restoreScrollPosition()
     }
   }

@@ -1,30 +1,28 @@
 <template>
   <div class="router-tab">
-    <!-- 页签头部 -->
+    <!-- 탭 헤더 -->
     <header ref="header" class="router-tab__header">
       <div class="router-tab__slot-start">
         <slot name="start" />
       </div>
 
       <tab-scroll ref="scroll">
-        <!-- 页签列表 -->
+        <!-- 탭 목록 -->
         <transition-group
-          tag="ul"
-          class="router-tab__nav"
           v-bind="tabTrans"
           @after-enter="onTabTrans"
           @after-leave="onTabTrans"
         >
-          <tab-item
-            v-for="(item, index) in items"
-            :key="item.id || item.to"
-            ref="tab"
-            :data="item"
-            :index="index"
-            @contextmenu.native.prevent="
-              e => showContextmenu(item.id, index, e)
-            "
-          />
+          <ul class="router-tab__nav" key="0">
+            <tab-item
+              v-for="(item, index) in items"
+              :key="item.id || item.to"
+              ref="tab"
+              :data="item"
+              :index="index"
+              @contextmenu="e => showContextmenu(item.id, index, e)"
+            />
+          </ul>
         </transition-group>
       </tab-scroll>
 
@@ -33,20 +31,22 @@
       </div>
     </header>
 
-    <!-- 页面容器 -->
+    <!-- 페이지 컨테이너 -->
     <div class="router-tab__container">
       <router-alive
+        ref="routerAlive"
         page-class="router-tab-page"
         :keep-alive="keepAlive"
         :reuse="reuse"
         :max="maxAlive"
         :transition="pageTrans"
         :page-scroller="pageScroller"
+        :route-index="routeIndex"
         @ready="onAliveReady"
         @change="onAliveChange"
       />
 
-      <!-- iframe 页面 -->
+      <!-- iframe 페이지 -->
       <transition-group
         v-bind="pageTrans"
         tag="div"
@@ -65,7 +65,7 @@
       </transition-group>
     </div>
 
-    <!-- 右键菜单 -->
+    <!-- 오른쪽 클릭 메뉴 -->
     <transition name="router-tab-zoom">
       <tab-contextmenu
         v-if="contextmenu !== false && contextData.index > -1"

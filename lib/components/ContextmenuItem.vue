@@ -4,7 +4,7 @@
     class="router-tab__contextmenu-item"
     :class="menuClass"
     :data-action="id"
-    :disabled="!enable"
+    :disabled="!enable || undefined"
     :title="tips"
     @click="enable && data.handler(context)"
   >

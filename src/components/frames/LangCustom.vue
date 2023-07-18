@@ -1,5 +1,5 @@
 <template>
-  <router-tab :lang="customLanguage" />
+  <router-tab :lang="customLanguage" :routeIndex="routeIndex" />
 </template>
 
 <script>
@@ -28,4 +28,11 @@ export default {
     }
   }
 }
+</script>
+
+<script setup>
+import { ref, inject } from 'vue'
+import { viewDepthKey } from 'vue-router'
+
+const routeIndex = inject(viewDepthKey)
 </script>

@@ -21,7 +21,7 @@ const frameRoutes = {
         path: 'operate',
         component: importPage('IframeOperate'),
         meta: {
-          title: 'Iframe 页签'
+          title: 'Iframe 탭'
         }
       }
     ]
@@ -56,7 +56,7 @@ const frameRoutes = {
         path: 'page/:id',
         component: importPage('Page'),
         meta: {
-          title: route => `页面外部滚动${route.params.id}`,
+          title: route => `페이지 밖으로 스크롤${route.params.id}`,
           icon: 'rt-icon-doc',
           key: 'path'
         }
@@ -65,7 +65,7 @@ const frameRoutes = {
         path: 'scroll-position',
         component: importPage('ScrollPosition'),
         meta: {
-          title: '页面内部滚动',
+          title: '페이지 내부 스크롤',
           icon: 'rt-icon-doc'
         }
       },
@@ -73,7 +73,7 @@ const frameRoutes = {
         path: 'scroll-multi',
         component: importPage('ScrollMulti'),
         meta: {
-          title: '多个滚动',
+          title: '다중 스크롤',
           icon: 'rt-icon-doc'
         }
       },
@@ -81,7 +81,7 @@ const frameRoutes = {
         path: 'scroll-async',
         component: importPage('ScrollAsync'),
         meta: {
-          title: '异步滚动',
+          title: '비동기 스크롤',
           icon: 'rt-icon-doc'
         }
       }

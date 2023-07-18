@@ -1,17 +1,13 @@
-import Vue from 'vue'
-import RouterTab from '../lib'
-
+import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 
-Object.assign(Vue.config, {
-  productionTip: false,
-  devtools: true
-})
+// import RouterTab from '../lib'
+import RouterTab from '../dist/vue-router-tab'
 
-Vue.use(RouterTab)
+const app = createApp(App)
 
-new Vue({
-  router,
-  render: h => h(App)
-}).$mount('#app')
+app.use(RouterTab)
+app.use(router)
+
+app.mount('#app')

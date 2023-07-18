@@ -62,7 +62,7 @@ export default {
   },
 
   // 组件销毁后移除 iframe
-  destroyed() {
+  unmounted() {
     let { url } = this
     let { iframes } = this.$tabs
     let index = iframes.indexOf(url)

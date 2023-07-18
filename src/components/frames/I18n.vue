@@ -1,9 +1,9 @@
 <template>
-  <router-tab :i18n="i18n" :tabs="tabs" />
+  <router-tab :i18n="i18n" :tabs="tabs" :routeIndex="routeIndex" />
 </template>
 
 <script>
-import Vue from 'vue'
+// import Vue from 'vue'
 
 export default {
   name: 'LangCustom',
@@ -39,19 +39,19 @@ export default {
 
   beforeCreate() {
     // 全局语言方法
-    Vue.prototype.$lang = {
-      set: lang => {
-        this.currentLang = lang
-      },
+    // Vue.prototype.$lang = {
+    //   set: lang => {
+    //     this.currentLang = lang
+    //   },
 
-      get: () => this.currentLang,
+    //   get: () => this.currentLang,
 
-      list: () => Object.keys(this.langs)
-    }
+    //   list: () => Object.keys(this.langs)
+    // }
   },
 
-  destroyed() {
-    Vue.prototype.$lang = null
+  unmounted() {
+    // Vue.prototype.$lang = null
   },
 
   methods: {
@@ -63,4 +63,11 @@ export default {
     }
   }
 }
+</script>
+
+<script setup>
+import { ref, inject } from 'vue'
+import { viewDepthKey } from 'vue-router'
+
+const routeIndex = inject(viewDepthKey)
 </script>

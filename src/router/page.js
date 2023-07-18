@@ -6,7 +6,7 @@ export default () => [
     path: 'page/:id',
     component: importPage('Page'),
     meta: {
-      title: route => `页面${route.params.id}`,
+      title: route => `페이지${route.params.id}`,
       icon: 'rt-icon-doc',
       key: 'path'
     }
@@ -19,7 +19,7 @@ export default () => [
     path: 'no-cache/:id',
     component: importPage('Page'),
     meta: {
-      title: route => `无缓存页面${route.params.id}`,
+      title: route => `캐시 페이지 없음${route.params.id}`,
       keepAlive: false,
       icon: 'rt-icon-doc',
       key: 'path'
@@ -37,7 +37,7 @@ export default () => [
     path: 'rule/default/:catalog/:type',
     component: importPage('Rule'),
     meta: {
-      title: route => `规则:默认-${route.params.catalog}/${route.params.type}`,
+      title: route => `규칙:기본값-${route.params.catalog}/${route.params.type}`,
       icon: 'rt-icon-log'
     }
   },
@@ -49,7 +49,7 @@ export default () => [
     path: 'rule/path/:catalog/:type',
     component: importPage('Rule'),
     meta: {
-      title: route => `规则:path-${route.params.catalog}/${route.params.type}`,
+      title: route => `규칙:path-${route.params.catalog}/${route.params.type}`,
       icon: 'rt-icon-log',
       key: 'path'
     }
@@ -63,7 +63,7 @@ export default () => [
     component: importPage('Rule'),
     meta: {
       title: route =>
-        `规则:fullPath-${route.params.catalog}/${route.params.type}`,
+        `규칙:fullPath-${route.params.catalog}/${route.params.type}`,
       icon: 'rt-icon-log',
       key: 'fullPath'
     }
@@ -77,7 +77,7 @@ export default () => [
     component: importPage('Rule'),
     meta: {
       title: route =>
-        `规则:自定义-${route.params.catalog}/${route.params.type}`,
+        `규칙:맞춤화-${route.params.catalog}/${route.params.type}`,
       icon: 'rt-icon-log',
       key: route => '/rule/custom/' + route.params.catalog
     }
@@ -86,7 +86,7 @@ export default () => [
     path: 'tab-dynamic',
     component: importPage('TabDynamic'),
     meta: {
-      title: '动态页签',
+      title: '동적 탭',
       icon: 'rt-icon-log'
     }
   },
@@ -94,7 +94,7 @@ export default () => [
     path: 'page-leave',
     component: importPage('PageLeave'),
     meta: {
-      title: '页面离开确认',
+      title: '페이지 떠나기 확인',
       icon: 'rt-icon-contact'
     }
   },
@@ -105,7 +105,7 @@ export default () => [
       return route.fullPath + '/page1'
     },
     meta: {
-      title: '嵌套路由',
+      title: '중첩 경로',
       icon: 'rt-icon-doc'
     },
     children: [

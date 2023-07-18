@@ -5,7 +5,7 @@ export default {
   path: '404',
   component: importPage('404'),
   meta: {
-    title: '找不到页面',
+    title: '페이지를 찾을 수 없음',
     icon: 'rt-icon-warning'
   }
 }

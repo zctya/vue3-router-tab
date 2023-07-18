@@ -1,5 +1,5 @@
 <template>
-  <router-tab :tabs="tabs" />
+  <router-tab :tabs="tabs" :routeIndex="routeIndex" />
 </template>
 
 <script>
@@ -39,4 +39,11 @@ export default {
     }
   }
 }
+</script>
+
+<script setup>
+import { ref, inject } from 'vue'
+import { viewDepthKey } from 'vue-router'
+
+const routeIndex = inject(viewDepthKey)
 </script>

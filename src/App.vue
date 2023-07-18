@@ -100,15 +100,14 @@ $just-trans: all 0.2s ease-in-out;
     left: 0;
   }
 
-  ::v-deep .router-tab {
+  :deep(.router-tab) {
     height: 100%;
-
-    // 路由页面
-    &-page {
-      padding: 15px;
-      font-size: 14px;
-      line-height: 1.5;
-    }
+  }
+  // 路由页面
+  :deep(.router-tab-page) {
+    padding: 15px;
+    font-size: 14px;
+    line-height: 1.5;
   }
 }
 </style>

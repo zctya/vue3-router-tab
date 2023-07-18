@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import PageTimer from '../components/PageTimer'
+import PageTimer from '../components/PageTimer.vue'
 
 export default {
   name: 'PageLeave',

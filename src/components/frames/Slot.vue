@@ -1,5 +1,5 @@
 <template>
-  <router-tab :class="{ 'is-fullscreen': fullscreen }">
+  <router-tab :class="{ 'is-fullscreen': fullscreen }" :routeIndex="routeIndex">
     <!-- 页签开始 -->
     <template #start>
       <router-link
@@ -44,6 +44,13 @@ export default {
 }
 </script>
 
+<script setup>
+import { ref, inject } from 'vue'
+import { viewDepthKey } from 'vue-router'
+
+const routeIndex = inject(viewDepthKey)
+</script>
+
 <style lang="scss" scoped>
 .tab-badge {
   $s: 1.2em;
@@ -65,9 +72,9 @@ export default {
 }
 
 // 页签前后插槽样式
-.router-tab ::v-deep {
-  .router-tab__slot-start,
-  .router-tab__slot-end {
+.router-tab {
+  :deep(.router-tab__slot-start),
+  :deep(.router-tab__slot-end) {
     display: flex;
     align-items: center;
   }

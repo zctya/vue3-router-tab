@@ -4,7 +4,7 @@
 
     <section>
       切换语言：
-      <a
+      <!-- <a
         v-for="lang in $lang.list()"
         :key="lang"
         :class="{ primary: lang === $lang.get() }"
@@ -12,7 +12,7 @@
         @click="$lang.set(lang)"
       >
         {{ lang }}
-      </a>
+      </a> -->
     </section>
   </div>
 </template>

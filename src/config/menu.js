@@ -1,48 +1,48 @@
 export default [
   {
-    text: 'RouterTab 配置',
+    text: 'RouterTab 구성',
     children: [
-      { text: '默认配置', to: '/default' },
-      { text: '初始展示页签', to: '/initial-tabs' },
-      { text: '刷新还原页签', to: '/restore' },
-      { text: 'Iframe 页签', to: '/iframe' }
+      { text: '기본 할당', to: '/default' },
+      { text: '초기 표시 탭', to: '/initial-tabs' },
+      { text: '복원 탭 새로 고침', to: '/restore' },
+      { text: 'Iframe 탭', to: '/iframe' }
     ]
   },
   {
-    text: '个性化',
+    text: '개인화',
     children: [
-      { text: '过渡效果', to: '/transition' },
-      { text: '插槽', to: '/slot' },
-      { text: '右键菜单', to: '/contextmenu' },
-      { text: '拖拽排序-禁用', to: '/dragsort' },
-      { text: '新页签插入位置', to: '/append' },
-      { text: '关闭最后的页签', to: '/close-last-tab' },
-      { text: '滚动位置', to: '/page-scroller/' }
+      { text: '전환 효과', to: '/transition' },
+      { text: '슬롯', to: '/slot' },
+      { text: '우클릭 메뉴', to: '/contextmenu' },
+      { text: '드래그 앤 드롭 정렬 - 비활성화됨', to: '/dragsort' },
+      { text: '새 탭 삽입 위치', to: '/append' },
+      { text: '마지막 탭 닫기', to: '/close-last-tab' },
+      { text: '스크롤 위치', to: '/page-scroller/' }
     ]
   },
   {
-    text: '缓存控制',
+    text: '캐시 제어',
     children: [
-      { text: '页签规则', to: '/default/rule' },
-      { text: '页签缓存-禁用', to: '/default/no-cache' },
-      { text: '最大缓存数', to: '/max-alive' },
-      { text: '复用组件', to: '/reuse' }
+      { text: '탭 규칙', to: '/default/rule' },
+      { text: '탭 캐시 - 비활성화됨', to: '/default/no-cache' },
+      { text: '최대 캐시 수', to: '/max-alive' },
+      { text: '재사용 가능한 구성 요소', to: '/reuse' }
     ]
   },
   {
-    text: '页面功能',
+    text: '페이지 기능',
     children: [
-      { text: '动态页签配置', to: '/default/tab-dynamic' },
-      { text: '页面离开确认', to: '/initial-tabs/page-leave' },
-      { text: '嵌套路由', to: '/default/nest/1' }
+      { text: '동적 탭 구성', to: '/default/tab-dynamic' },
+      { text: '페이지 떠나기 확인', to: '/initial-tabs/page-leave' },
+      { text: '중첩 경로', to: '/default/nest/1' }
     ]
   },
   {
-    text: '多语言支持',
+    text: '다국어 지원',
     children: [
-      { text: '页签国际化', to: '/i18n' },
-      { text: '组件语言', to: '/lang-en' },
-      { text: '组件自定义语言', to: '/lang-custom' }
+      { text: '탭 국제화', to: '/i18n' },
+      { text: '컴포넌트 언어', to: '/lang-en' },
+      { text: '구성 요소 사용자 정의 언어', to: '/lang-custom' }
     ]
   }
 ]

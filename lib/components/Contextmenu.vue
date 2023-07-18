@@ -103,7 +103,7 @@ export default {
       for (let { id } of tabs) {
         try {
           await this.$tabs.removeTab(id)
-        } catch (e) {}
+        } catch (e) { /* empty */ }
       }
 
       // 当前页签如已关闭，则打开右键选中页签
@@ -117,6 +117,7 @@ export default {
       const { clientWidth } = this.$el
       const winWidth = window.innerWidth
       if (this.data.left + clientWidth > winWidth) {
+        // eslint-disable-next-line vue/no-mutating-props
         this.data.left = winWidth - clientWidth - 5
       }
     }

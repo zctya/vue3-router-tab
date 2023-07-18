@@ -1,25 +1,25 @@
 <template>
   <div>
-    <h3>Iframe 页签操作</h3>
+    <h3>Iframe 탭 작업</h3>
 
     <p>
       <a class="demo-btn" @click="$tabs.openIframe(site.src, site.title, icon)">
-        打开“{{ site.title }}”
+        열려 있는“{{ site.title }}”
       </a>
 
       <a class="demo-btn" @click="$tabs.refreshIframe(site.src)">
-        刷新“{{ site.title }}”
+        새로 고침“{{ site.title }}”
       </a>
 
       <a class="demo-btn" @click="$tabs.closeIframe(site.src)">
-        关闭“{{ site.title }}”
+        닫혀 있는“{{ site.title }}”
       </a>
     </p>
 
     <p>
       <a
         class="demo-btn"
-        title="XSS 跨站链接的 iframe 将展示空白页面"
+        title="XSS 교차 사이트 연결 iframe 빈 페이지를 표시합니다"
         @click="$tabs.openIframe(xss.js, 'XSS - JS', icon)"
       >
         XSS - JS
@@ -27,45 +27,45 @@
 
       <a
         class="demo-btn"
-        title="XSS 跨站链接的 iframe 将展示空白页面"
+        title="XSS 교차 사이트 연결 iframe 빈 페이지가 표시됩니다"
         @click="$tabs.openIframe(xss.base64, 'XSS - Base64', icon)"
       >
         XSS - Base64
       </a>
     </p>
 
-    <h3>打开 Iframe 页签</h3>
+    <h3>열려 있는 Iframe 탭</h3>
 
     <div class="custom-iframe">
       <label>
-        名称：
-        <input v-model="iframe.title" name="title" placeholder="页签标题" />
+        이름：
+        <input v-model="iframe.title" name="title" placeholder="탭 제목" />
       </label>
 
       <label>
-        网址：
-        <input v-model="iframe.src" name="src" placeholder="请输入完整的网址" />
+        URL：
+        <input v-model="iframe.src" name="src" placeholder="전체 URL을 입력하세요." />
       </label>
 
       <a
         class="demo-btn primary"
         @click="iframe.src && $tabs.openIframe(iframe.src, iframe.title, icon)"
       >
-        打开页签
+        열린 탭
       </a>
     </div>
 
     <template v-if="/^\/iframe\//.test($route.path)">
       <h3 class="text-strong">
-        提示：
+        힌트：
       </h3>
 
       <p>
-        开启浏览器开发者工具的 console 页签，打开 Iframe 页签并查看
+        브라우저 개발자 도구 열기 console 탭，Iframe 탭을 열고 보기
         <code>iframe-mounted</code>
-        和
+        그리고
         <code>iframe-loaded</code>
-        事件的参数打印
+        이벤트 매개변수 인쇄
       </p>
     </template>
   </div>
