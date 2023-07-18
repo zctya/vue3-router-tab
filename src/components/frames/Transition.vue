@@ -1,13 +1,6 @@
 <template>
-  <router-tab page-transition="page-fade" tab-transition="tab-scale" :routeIndex="routeIndex" />
+  <router-tab page-transition="page-fade" tab-transition="tab-scale" />
 </template>
-
-<script setup>
-import { ref, inject } from 'vue'
-import { viewDepthKey } from 'vue-router'
-
-const routeIndex = inject(viewDepthKey)
-</script>
 
 <style lang="scss" scoped>
 // 页面 fade 过渡

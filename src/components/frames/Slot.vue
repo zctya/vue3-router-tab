@@ -1,5 +1,5 @@
 <template>
-  <router-tab :class="{ 'is-fullscreen': fullscreen }" :routeIndex="routeIndex">
+  <router-tab :class="{ 'is-fullscreen': fullscreen }">
     <!-- 页签开始 -->
     <template #start>
       <router-link
@@ -42,13 +42,6 @@ import fullscreen from '../../mixins/fullscreen'
 export default {
   mixins: [fullscreen]
 }
-</script>
-
-<script setup>
-import { ref, inject } from 'vue'
-import { viewDepthKey } from 'vue-router'
-
-const routeIndex = inject(viewDepthKey)
 </script>
 
 <style lang="scss" scoped>

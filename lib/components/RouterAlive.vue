@@ -32,20 +32,8 @@
 </template>
 
 <script>
-import { inject } from 'vue'
-import { viewDepthKey } from 'vue-router'
-
 import { mapGetters, getTransOpt, getCtorId } from '../util'
 import RouteMatch from '../util/RouteMatch'
-
-// 页面监听钩子
-const PAGE_HOOKS = [
-  'created',
-  'mounted',
-  'activated',
-  'deactivated',
-  'unmounted'
-]
 
 /**
  * 路由缓存控件
@@ -95,11 +83,6 @@ export default {
     transition: {
       type: [String, Object]
     },
-
-    routeIndex: {
-      type: Number,
-      default: null
-    }
   },
 
   emits: ['ready', 'change'],
@@ -111,10 +94,6 @@ export default {
     return {
       // 路由匹配信息
       routeMatch: new RouteMatch(this),
-
-      // 页面路由索引
-      // routeIndex: inject(viewDepthKey),
-      // routeIndex: this.routeIndexProps,
 
       // 是否正在更新
       onRefresh: false,
@@ -135,14 +114,6 @@ export default {
       'basePath',
       'alivePath'
     ]),
-
-    // 监听子页面钩子
-    hooks() {
-      return PAGE_HOOKS.reduce((events, hook) => {
-        events['vue:' + hook] = () => this.pageHook(hook)
-        return events
-      }, {})
-    },
 
     // 页面过渡
     pageTrans() {
@@ -214,21 +185,18 @@ export default {
 
       // 캐시 구성 요소 인스턴스를 삭제하고 RouterAlive 캐시 레코드를 지웁니다.
       if (cacheItem) {
-        // console.log('remove', key, cacheItem.vm.$.vnode.type.name, this.$refs.keepAlive.$.__v_cache)
-        const excludeName = cacheItem.vm.$.vnode.type.name
-        // cacheItem.vm.$.vnode.type.name = excludeName
-        // cacheItem.vm.resetComponent()
-        // this.keepAliveExclude = excludeName
+        // console.log('remove', key, cacheItem.vm.type.__name, cacheItem.vm.type.name, cacheItem.vm)
+        let excludeName = cacheItem.vm.type.__name || cacheItem.vm.type.name
+        if (!excludeName) {
+          console.warn('missing name of component')
+        }
+        this.keepAliveExclude = excludeName
         cacheItem.vm = null
         this.cache[key] = null
 
-        // this.$nextTick(() => {
-        //   this.keepAliveExclude = excludeName
-        // })
-
-        // setTimeout(() => {
-        //   this.keepAliveExclude = null
-        // }, 100)
+        setTimeout(() => {
+          this.keepAliveExclude = null
+        }, 1000)
       }
     },
 
@@ -264,9 +232,9 @@ export default {
     },
 
     // 页面挂载
-    pageHookMounted() {
+    pageHookMounted(target) {
       if (this.cache[this.key]) {
-        this.cache[this.key].vm = this.$refs.alive
+        this.cache[this.key].vm = target
 
         // 重置初始滚动位置
         this.resetScrollPosition()
@@ -274,7 +242,7 @@ export default {
         this.cache[this.key] = {
           alivePath: this.alivePath,
           fullPath: this.$route.fullPath,
-          vm: this.$refs.alive
+          vm: target
         }
       }
     },

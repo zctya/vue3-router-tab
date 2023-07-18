@@ -41,7 +41,6 @@
         :max="maxAlive"
         :transition="pageTrans"
         :page-scroller="pageScroller"
-        :route-index="routeIndex"
         @ready="onAliveReady"
         @change="onAliveChange"
       />

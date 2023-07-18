@@ -1,5 +1,5 @@
 <template>
-  <router-tab :restore="restoreKey" restore-watch :routeIndex="routeIndex" />
+  <router-tab :restore="restoreKey" restore-watch />
 </template>
 
 <script>
@@ -17,11 +17,4 @@ export default {
     }, Math.random() * 1000)
   }
 }
-</script>
-
-<script setup>
-import { ref, inject } from 'vue'
-import { viewDepthKey } from 'vue-router'
-
-const routeIndex = inject(viewDepthKey)
 </script>

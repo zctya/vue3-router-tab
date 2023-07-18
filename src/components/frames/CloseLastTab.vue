@@ -1,10 +1,3 @@
 <template>
-  <router-tab :keep-last-tab="false" :routeIndex="routeIndex" />
+  <router-tab :keep-last-tab="false" />
 </template>
-
-<script setup>
-import { ref, inject } from 'vue'
-import { viewDepthKey } from 'vue-router'
-
-const routeIndex = inject(viewDepthKey)
-</script>
