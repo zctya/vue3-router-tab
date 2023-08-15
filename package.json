@@ -1,6 +1,6 @@
 {
   "name": "@fantage9/vue-router-tab",
-  "version": "0.9.17",
+  "version": "0.9.18",
   "main": "./dist/vue-router-tab.umd.js",
   "files": [
     "dist/"
