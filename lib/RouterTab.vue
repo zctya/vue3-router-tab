@@ -33,6 +33,7 @@
 
     <!-- 페이지 컨테이너 -->
     <div class="router-tab__container">
+      <slot name="containerHeader" />
       <router-alive
         ref="routerAlive"
         page-class="router-tab-page"
@@ -62,6 +63,7 @@
           @load="iframeLoaded(url)"
         />
       </transition-group>
+      <slot name="containerFooter" />
     </div>
 
     <!-- 오른쪽 클릭 메뉴 -->
