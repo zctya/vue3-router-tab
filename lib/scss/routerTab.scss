@@ -231,6 +231,9 @@ $close-icon-size: 13px;
 
     > .router-alive {
       height: 100%;
+      > .keep-alive-component-container {
+        height: 100%;
+      }
     }
   }
 

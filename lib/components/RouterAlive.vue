@@ -12,18 +12,20 @@
         @after-leave="onTrans('leave')"
       >
         <keep-alive v-if="alive" ref="keepAlive" :max="max" :exclude="keepAliveExclude">
-          <component
-            v-if="!onRefresh"
-            :is="Component"
-            :key="key"
-            ref="alive"
-            @vue:created="pageHookCreated"
-            @vue:mounted="pageHookMounted"
-            @vue:activated="pageHookActivated"
-            @vue:deactivated="pageHookDeactivated"
-            @vue:unmounted="pageHookUnmounted"
-            @page-loaded="onPageLoaded"
-          />
+          <div class="keep-alive-component-container">
+            <component
+              v-if="!onRefresh"
+              :is="Component"
+              :key="key"
+              ref="alive"
+              @vue:created="pageHookCreated"
+              @vue:mounted="pageHookMounted"
+              @vue:activated="pageHookActivated"
+              @vue:deactivated="pageHookDeactivated"
+              @vue:unmounted="pageHookUnmounted"
+              @page-loaded="onPageLoaded"
+            />
+          </div>
         </keep-alive>
         <component v-else :is="Component" ref="alive" />
       </transition>

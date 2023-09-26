@@ -1,5 +1,6 @@
 <template>
-  <div>
+    <!-- Fragments -->
+  
     <h2 @click="click">페이지{{ pageId }}</h2>
 
     <page-timer />
@@ -57,7 +58,7 @@
     <h3>라우팅 정보</h3>
 
     <page-route-info />
-  </div>
+  
 </template>
 
 <script>
