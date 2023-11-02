@@ -1,6 +1,6 @@
 {
   "name": "@fantage9/vue-router-tab",
-  "version": "0.9.21",
+  "version": "0.9.23",
   "main": "./dist/vue-router-tab.umd.js",
   "files": [
     "dist/"
@@ -28,8 +28,8 @@
     "version:build:publish": "npm --no-git-tag-version version patch && npm run build && npm publish --access=public"
   },
   "dependencies": {
-    "vue": "^3.3.4",
-    "vue-router": "^4.2.2"
+    "vue": "^3.3.7",
+    "vue-router": "^4.2.5"
   },
   "devDependencies": {
     "@originjs/vite-plugin-require-context": "^1.0.9",

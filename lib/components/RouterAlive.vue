@@ -5,30 +5,21 @@
       :class="pageClass"
       v-slot="{ Component }"
     >
-      <transition
-        v-bind="pageTrans"
-        appear
-        @after-enter="onTrans('enter')"
-        @after-leave="onTrans('leave')"
-      >
-        <keep-alive v-if="alive" ref="keepAlive" :max="max" :exclude="keepAliveExclude">
-          <div class="keep-alive-component-container">
-            <component
-              v-if="!onRefresh"
-              :is="Component"
-              :key="key"
-              ref="alive"
-              @vue:created="pageHookCreated"
-              @vue:mounted="pageHookMounted"
-              @vue:activated="pageHookActivated"
-              @vue:deactivated="pageHookDeactivated"
-              @vue:unmounted="pageHookUnmounted"
-              @page-loaded="onPageLoaded"
-            />
-          </div>
-        </keep-alive>
-        <component v-else :is="Component" ref="alive" />
-      </transition>
+      <keep-alive v-if="alive" ref="keepAlive" :max="max" :exclude="keepAliveExclude">
+        <component
+          v-if="!onRefresh"
+          :is="Component"
+          :key="key"
+          ref="alive"
+          @vue:created="pageHookCreated"
+          @vue:mounted="pageHookMounted"
+          @vue:activated="pageHookActivated"
+          @vue:deactivated="pageHookDeactivated"
+          @vue:unmounted="pageHookUnmounted"
+          @page-loaded="onPageLoaded"
+        />
+      </keep-alive>
+      <component v-else :is="Component" ref="alive" />
     </router-view>
   </div>
 </template>
@@ -227,6 +218,7 @@ export default {
 
     // 页面创建
     pageHookCreated() {
+      // console.log('pageHookCreated')
       this.cache[this.key] = {
         alivePath: this.alivePath,
         fullPath: this.$route.fullPath
@@ -235,6 +227,7 @@ export default {
 
     // 页面挂载
     pageHookMounted(target) {
+      // console.log('pageHookMounted')
       if (this.cache[this.key]) {
         this.cache[this.key].vm = target
 
@@ -251,6 +244,7 @@ export default {
 
     // 页面激活
     pageHookActivated(target) {
+      // console.log('pageHookActivated')
       const pageVm = this.$refs.page
 
       // 热重载更新
@@ -268,6 +262,7 @@ export default {
 
     // 页面失活
     pageHookDeactivated(target) {
+      // console.log('pageHookDeactivated')
       if (this.checkHotReloading(target, 'deactivated')) return
 
       // 保存滚动位置
@@ -276,6 +271,7 @@ export default {
 
     // 页面销毁后清理 cache
     async pageHookUnmounted() {
+      // console.log('pageHookUnmounted')
       await this.$nextTick()
 
       if (!this.cache) return
@@ -287,16 +283,13 @@ export default {
           this.remove(key)
         }
       })
-    },
-
-    // 页面过渡后结束刷新状态
-    onTrans(from) {
       if (this.onRefresh) {
+        // console.log('pageHookUnmounted onRefresh')
         this.onRefresh = false
         this.$emit('change', 'create', this.routeMatch)
       }
     },
-
+    
     // 匹配路由信息
     matchRoute($route) {
       const matched = this._match
