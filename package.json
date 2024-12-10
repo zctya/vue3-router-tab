@@ -10,7 +10,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tenrok/vue3-router-tab"
+    "url": "git+https://github.com/tenrok/vue3-router-tab.git"
   },
   "license": "MIT",
   "author": "Jacob Koo <fantage9@gmail.com>",
