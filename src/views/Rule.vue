@@ -1,17 +1,17 @@
 <template>
   <div>
-    <h2>页签规则</h2>
+    <h2>Tab rules</h2>
 
-    <p>通过配置路由元信息 <code>meta.key</code> 来设置页签规则</p>
+    <p>By configuring routing meta information <code>meta.key</code> to set tab rules</p>
 
     <page-timer />
 
     <table class="demo-table">
       <thead>
         <tr>
-          <th>规则</th>
-          <th>配置</th>
-          <th>说明</th>
+          <th>rule</th>
+          <th>configuration</th>
+          <th>description</th>
         </tr>
       </thead>
 
@@ -21,7 +21,7 @@
           :key="item.id"
           :class="{ on: curRole === item.id }"
           :style="{ cursor: curRole === item.id ? 'default' : 'pointer' }"
-          title="点击切换当前规则"
+          title="Click to switch current rules"
           @click="curRole !== item.id && $tabs.reset(`../../${item.id}`)"
         >
           <td>{{ item.label }}</td>
@@ -33,10 +33,13 @@
       </tbody>
     </table>
 
-    <h4>选定规则后，点击下面的链接，并观察页签的变化</h4>
+    <h4>After selecting the rule, click the link below and observe the changes in the tab</h4>
 
     <ul class="btn-list">
-      <li v-for="cat in catalogs" :key="cat">
+      <li
+        v-for="cat in catalogs"
+        :key="cat"
+      >
         <router-link
           v-for="t in types"
           :key="t"
@@ -46,88 +49,96 @@
           {{ cat }}/{{ t }}
         </router-link>
 
-        <router-link class="demo-btn link" :to="`../${cat}/1?q=abc`">
+        <router-link
+          class="demo-btn link"
+          :to="`../${cat}/1?q=abc`"
+        >
           {{ cat }}/1?q=abc
         </router-link>
 
-        <router-link class="demo-btn link" :to="`../${cat}/1?q=def`">
+        <router-link
+          class="demo-btn link"
+          :to="`../${cat}/1?q=def`"
+        >
           {{ cat }}/1?q=def
         </router-link>
       </li>
     </ul>
 
-    <h3>路由信息</h3>
+    <h3>Routing information</h3>
 
     <page-route-info />
   </div>
 </template>
 
 <script>
-import PageTimer from '../components/PageTimer.vue'
-import PageRouteInfo from '../components/PageRouteInfo.vue'
+  import PageTimer from '../components/PageTimer.vue'
+  import PageRouteInfo from '../components/PageRouteInfo.vue'
 
-export default {
-  name: 'Rule',
-  components: { PageTimer, PageRouteInfo },
-  data() {
-    let route = this.$route
-    let { catalog, type } = route.params
+  export default {
+    name: 'Rule',
 
-    return {
-      rules: [
-        {
-          id: 'default',
-          label: '默认',
-          value: '',
-          desc: '同一路由共用同一个页签'
-        },
-        {
-          id: 'path',
-          label: 'path',
-          value: 'path',
-          desc: '相同 route.params 的路由共用页签'
-        },
-        {
-          id: 'fullPath',
-          label: 'fullPath',
-          value: 'fullPath',
-          desc: '相同 route.params 和 route.query 的路由共用页签'
-        },
-        {
-          id: 'custom',
-          label: '自定义',
-          value: "route => 'route-rule/' + route.params.catalog",
-          desc: '相同 catalog 参数的路由共用页签'
-        }
-      ],
+    components: { PageTimer, PageRouteInfo },
 
-      curRole: /\/rule\/([^/]+)\//.exec(route.path)[1],
-      catalog,
-      type,
-      catalogs: ['a', 'b', 'c'],
-      types: [1, 2],
-      link: { catalog, type }
+    data() {
+      let route = this.$route
+      let { catalog, type } = route.params
+
+      return {
+        rules: [
+          {
+            id: 'default',
+            label: 'default',
+            value: '',
+            desc: 'The same route shares the same tab'
+          },
+          {
+            id: 'path',
+            label: 'path',
+            value: 'path',
+            desc: 'Routes with the same route.params share tabs'
+          },
+          {
+            id: 'fullPath',
+            label: 'fullPath',
+            value: 'fullPath',
+            desc: 'Routes with the same route.params and route.query share tabs'
+          },
+          {
+            id: 'custom',
+            label: 'customize',
+            value: "route => 'route-rule/' + route.params.catalog",
+            desc: 'Routes with the same catalog parameters share tabs'
+          }
+        ],
+
+        curRole: /\/rule\/([^/]+)\//.exec(route.path)[1],
+        catalog,
+        type,
+        catalogs: ['a', 'b', 'c'],
+        types: [1, 2],
+        link: { catalog, type }
+      }
     }
   }
-}
 </script>
 
 <style lang="scss" scoped>
-.rule-fn {
-  color: $color;
-  font-size: 1rem;
-  font-style: italic;
-}
+  .rule-fn {
+    color: $color;
+    font-size: 1rem;
+    font-style: italic;
+  }
 
-.btn-list {
-  padding: 0;
+  .btn-list {
+    padding: 0;
 
-  li {
-    list-style: none;
+    li {
+      list-style: none;
 
-    .demo-btn {
-      margin-right: 0.5em;
+      .demo-btn {
+        margin-right: 0.5em;
+      }
     }
   }
-}
 </style>

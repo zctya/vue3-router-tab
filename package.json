@@ -1,30 +1,39 @@
 {
-  "name": "@fantage9/vue-router-tab",
-  "version": "0.9.23",
-  "main": "./dist/vue-router-tab.umd.js",
-  "files": [
-    "dist/"
-  ],
+  "name": "@tenrok/vue3-router-tab",
+  "version": "0.9.24",
+  "private": false,
   "description": "Vue.js tab components for Vue 3.0+ & Vue Router 4.0+, based on Vue Router",
   "keywords": [
     "vue-router-tab",
     "router-tab",
     "tabs"
   ],
-  "private": false,
-  "license": "MIT",
-  "author": "Jacob Koo <fantage9@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/fantage9/vue-router-tab"
+    "url": "git+https://github.com/tenrok/vue3-router-tab"
   },
+  "license": "MIT",
+  "author": "Jacob Koo <fantage9@gmail.com>",
+  "contributors": [
+    {
+      "name": "rat1borik",
+      "url": "https://github.com/rat1borik"
+    },
+    {
+      "name": "solodyagin",
+      "url": "https://github.com/solodyagin"
+    }
+  ],
+  "main": "./dist/vue-router-tab.umd.js",
+  "files": [
+    "dist/"
+  ],
   "scripts": {
-    "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview",
+    "dev": "vite",
+    "format": "prettier lib src --write",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
-    "format": "prettier --write src/",
-    "---": "---",
+    "preview": "vite preview",
     "version:build:publish": "npm --no-git-tag-version version patch && npm run build && npm publish --access=public"
   },
   "dependencies": {

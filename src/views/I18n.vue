@@ -1,9 +1,9 @@
 <template>
   <div>
-    <h2>国际化路由页签</h2>
+    <h2>Internationalized Routing Tab</h2>
 
     <section>
-      切换语言：
+      Switch language:
       <!-- <a
         v-for="lang in $lang.list()"
         :key="lang"

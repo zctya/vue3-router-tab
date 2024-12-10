@@ -10,7 +10,9 @@ module.exports = {
   ],
   rules: {
     'no-unused-vars': 'warn',
-    'vue/multi-word-component-names': 'off'
+    'vue/multi-word-component-names': 'off',
+    'vue/no-mutating-props': 'off',
+    'vue/require-default-prop': 'off'
   },
   parserOptions: {
     ecmaVersion: 'latest'

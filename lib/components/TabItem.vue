@@ -1,20 +1,30 @@
 <template>
-  <RouterLink :to="to" custom >
+  <RouterLink
+    :to="to"
+    custom
+  >
     <template #default="{ navigate }">
       <li
         :class="classList"
-        :draggable="$tabs.dragsort"
+        :draggable="$tabs.dragsort && !nodrag && (pinned ? allowDragPinned : true)"
         @click="navigate"
         @dragstart="onDragStart"
         @dragend="onDragEnd"
         @dragover.prevent="onDragOver"
         @dragleave.prevent="() => (isDragOver = false)"
         @drop.stop.prevent="onDrop"
-        @click.middle="() => closable && close()"
+        @click.middle="() => closable && (pinned ? allowClosePinned : true) && close()"
         @contextmenu.prevent="e => $emit('contextmenu', e)"
       >
-        <i v-if="icon" :class="['router-tab__item-icon', icon]" />
-        <span class="router-tab__item-title" :title="tips">
+        <i
+          v-if="icon"
+          :class="['router-tab__item-icon', icon]"
+        />
+        <span
+          v-if="!(pinned && hideTitlePinned)"
+          class="router-tab__item-title"
+          :title="tips"
+        >
           {{ title }}
         </span>
         <i
@@ -28,127 +38,154 @@
 </template>
 
 <script>
-import { mapGetters } from '../util'
+  import { mapGetters } from '../util'
 
-// 拖拽传输数据前缀
-const TRANSFER_PREFIX = 'RouterTabDragSortIndex:'
+  // Drag transfer data prefix
+  const TRANSFER_PREFIX = 'RouterTabDragSortIndex:'
 
-// 排序拖拽数据
-// 用以解决双核浏览器兼容模式下无法通过 dataTransfer.getData 获取数据
-let dragSortData = null
+  // Sort drag data
+  // To solve the problem that data cannot be obtained through dataTransfer.getData in dual-core browser compatibility mode
+  let dragSortData = null
 
-// 页签项
-// @vue/component
-export default {
-  name: 'TabItem',
-  inject: ['$tabs'],
+  // Tab Item
+  // @vue/component
+  export default {
+    name: 'TabItem',
 
-  props: {
-    // 页签原始数据，方便 slot 插槽自定义数据
-    data: {
-      type: Object,
-      required: true
+    inject: ['$tabs', 'allowDragPinned', 'allowClosePinned', 'hideTitlePinned'],
+
+    props: {
+      // Original data of the tab, convenient for slot to customize data
+      data: {
+        type: Object,
+        required: true
+      },
+
+      // Tab item index
+      index: Number
     },
 
-    // 页签项索引
-    index: Number
-  },
+    data() {
+      return {
+        onDragSort: false, // Is dragging in progress?
+        isDragOver: false // Whether to drag through
+      }
+    },
 
-  data() {
-    return {
-      onDragSort: false, // 是否正在拖拽
-      isDragOver: false // 是否拖拽经过
-    }
-  },
+    emits: ['contextmenu'],
 
-  emits: ['contextmenu'],
+    computed: {
+      // Extract computed properties from this.data
+      ...mapGetters('data', ['id', 'to', 'icon', 'tabClass', 'target', 'href', 'nodrag', 'pinned']),
 
-  computed: {
-    // 从 this.data 提取计算属性
-    ...mapGetters('data', ['id', 'to', 'icon', 'tabClass', 'target', 'href']),
+      // class
+      classList() {
+        return [
+          'router-tab__item',
+          this.tabClass,
+          {
+            'is-active': this.$tabs.activeTabId === this.id,
+            'is-closable': this.closable,
+            'is-contextmenu': this.$tabs.contextData.id === this.id,
+            'is-drag-over': this.isDragOver && !this.onDragSort
+          }
+        ]
+      },
 
-    // class
-    classList() {
-      return [
-        'router-tab__item',
-        this.tabClass,
-        {
-          'is-active': this.$tabs.activeTabId === this.id,
-          'is-closable': this.closable,
-          'is-contextmenu': this.$tabs.contextData.id === this.id,
-          'is-drag-over': this.isDragOver && !this.onDragSort
+      // Internationalization
+      i18nText() {
+        return this.$tabs.i18nText
+      },
+
+      // Untitled tab
+      untitled() {
+        return this.$tabs.langs.tab.untitled
+      },
+
+      // Tab title
+      title() {
+        return this.i18nText(this.data.title) || this.untitled
+      },
+
+      // Tab tips
+      tips() {
+        return this.i18nText(this.data.tips || this.data.title) || this.untitled
+      },
+
+      // Can it be closed?
+      closable() {
+        const { keepLastTab, items } = this.$tabs
+        return (this.pinned ? this.allowClosePinned : true) && this.data.closable !== false && !(keepLastTab && items.length < 2)
+      },
+
+      unpinnable() {
+        return this.data.unpinnable != false ? true : false
+      }
+    },
+
+    methods: {
+      // Close current tab
+      close() {
+        this.$tabs.closeTab(this.id)
+      },
+
+      // Drag
+      onDragStart(e) {
+        if (this.nodrag) return
+
+        this.onDragSort = this.$tabs.onDragSort = true
+        dragSortData = TRANSFER_PREFIX + this.index
+        e.dataTransfer.setData('text', dragSortData)
+        e.dataTransfer.effectAllowed = 'all'
+      },
+
+      // Drag and drop
+      onDragOver(e) {
+        const { items } = this.$tabs
+        const raw = e.dataTransfer.getData('text') || dragSortData
+
+        this.isDragOver = false
+
+        if (typeof raw !== 'string' || !raw.startsWith(TRANSFER_PREFIX)) return
+
+        const fromIndex = raw.replace(TRANSFER_PREFIX, '')
+        const tab = items[fromIndex]
+
+        this.isDragOver = true
+
+        if (this.nodrag || tab.pinned !== this.pinned) {
+          e.dataTransfer.dropEffect = 'none'
+        } else {
+          e.dataTransfer.dropEffect = 'move'
         }
-      ]
-    },
+      },
 
-    // 国际化
-    i18nText() {
-      return this.$tabs.i18nText
-    },
+      // Drag ends
+      onDragEnd() {
+        if (this.nodrag) return
 
-    // 未命名页签
-    untitled() {
-      return this.$tabs.langs.tab.untitled
-    },
+        this.onDragSort = this.$tabs.onDragSort = false
+        dragSortData = null
+      },
 
-    // 页签标题
-    title() {
-      return this.i18nText(this.data.title) || this.untitled
-    },
+      // Sort by release
+      onDrop(e) {
+        if (this.nodrag) return
 
-    // 页签提示
-    tips() {
-      return this.i18nText(this.data.tips || this.data.title) || this.untitled
-    },
+        const { items } = this.$tabs
+        const raw = e.dataTransfer.getData('text') || dragSortData
 
-    // 是否可关闭
-    closable() {
-      const { keepLastTab, items } = this.$tabs
-      return this.data.closable !== false && !(keepLastTab && items.length < 2)
-    }
-  },
+        this.isDragOver = false
 
-  methods: {
-    // 关闭当前页签
-    close() {
-      this.$tabs.closeTab(this.id)
-    },
+        if (typeof raw !== 'string' || !raw.startsWith(TRANSFER_PREFIX)) return
 
-    // 拖拽
-    onDragStart(e) {
-      this.onDragSort = this.$tabs.onDragSort = true
-      dragSortData = TRANSFER_PREFIX + this.index
-      e.dataTransfer.setData('text', dragSortData)
-      e.dataTransfer.effectAllowed = 'move'
-    },
-
-    // 拖拽悬浮
-    onDragOver(e) {
-      this.isDragOver = true
-      e.dataTransfer.dropEffect = 'move'
-    },
-
-    // 拖拽结束
-    onDragEnd() {
-      this.onDragSort = this.$tabs.onDragSort = false
-      dragSortData = null
-    },
-
-    // 释放后排序
-    onDrop(e) {
-      const { items } = this.$tabs
-      const raw = e.dataTransfer.getData('text') || dragSortData
-
-      this.isDragOver = false
-
-      if (typeof raw !== 'string' || !raw.startsWith(TRANSFER_PREFIX)) return
-
-      const fromIndex = raw.replace(TRANSFER_PREFIX, '')
-      const tab = items[fromIndex]
-
-      items.splice(fromIndex, 1)
-      items.splice(this.index, 0, tab)
+        const fromIndex = raw.replace(TRANSFER_PREFIX, '')
+        const tab = items[fromIndex]
+        if (tab.pinned === this.pinned) {
+          items.splice(fromIndex, 1)
+          items.splice(this.index, 0, tab)
+        }
+      }
     }
   }
-}
 </script>

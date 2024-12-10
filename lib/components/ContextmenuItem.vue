@@ -8,54 +8,59 @@
     :title="tips"
     @click="enable && data.handler(context)"
   >
-    <i v-if="icon" class="router-tab__contextmenu-icon" :class="icon"></i>
+    <i
+      v-if="icon"
+      class="router-tab__contextmenu-icon"
+      :class="icon"
+    />
     {{ title }}
   </a>
 </template>
 
 <script>
-import { mapGetters } from '../util'
+  import { mapGetters } from '../util'
 
-export default {
-  name: 'ContextmenuItem',
-  inject: ['$tabs'],
+  export default {
+    name: 'ContextmenuItem',
 
-  props: {
-    // 菜单数据
-    data: {
-      type: Object,
-      required: true
-    }
-  },
+    inject: ['$tabs', 'onTabEvent'],
 
-  computed: {
-    // 参数
-    context() {
-      const { $tabs, $parent: $menu } = this
-      const { target, data } = $menu
-      return { $tabs, $menu, target, data }
+    props: {
+      // Menu data
+      data: {
+        type: Object,
+        required: true
+      }
     },
 
-    // 从 this.data 提取计算属性
-    ...mapGetters(
-      'data',
-      {
-        id: '',
-        // 菜单标题
-        title() {
-          return this.$tabs.langs.contextmenu[this.id]
-        },
-        icon: '',
-        tips: '',
-        class: {
-          default: '',
-          alias: 'menuClass'
-        },
-        visible: true, // 是否显示
-        enable: true // 是否启用
+    computed: {
+      // Parameters
+      context() {
+        const { $tabs, $parent: $menu, onTabEvent } = this
+        const { target, data } = $menu
+        return { $tabs, $menu, target, data, onTabEvent }
       },
-      'context'
-    )
+
+      // Extract computed properties from this.data
+      ...mapGetters(
+        'data',
+        {
+          id: '',
+          // Menu title
+          title() {
+            return this.$tabs.langs.contextmenu[this.id]
+          },
+          icon: '',
+          tips: '',
+          class: {
+            default: '',
+            alias: 'menuClass'
+          },
+          visible: true, // Display
+          enable: true // Is it enabled?
+        },
+        'context'
+      )
+    }
   }
-}
 </script>

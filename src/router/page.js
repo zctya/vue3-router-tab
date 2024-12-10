@@ -1,12 +1,12 @@
 import { importPage } from '../utils'
 
-// 页面路由
+// Page routing
 export default () => [
   {
     path: 'page/:id',
     component: importPage('Page'),
     meta: {
-      title: route => `페이지${route.params.id}`,
+      title: route => `Page${route.params.id}`,
       icon: 'rt-icon-doc',
       key: 'path'
     }
@@ -19,7 +19,7 @@ export default () => [
     path: 'no-cache/:id',
     component: importPage('Page'),
     meta: {
-      title: route => `캐시 페이지 없음${route.params.id}`,
+      title: route => `No cache page ${route.params.id}`,
       keepAlive: false,
       icon: 'rt-icon-doc',
       key: 'path'
@@ -37,7 +37,7 @@ export default () => [
     path: 'rule/default/:catalog/:type',
     component: importPage('Rule'),
     meta: {
-      title: route => `규칙:기본값-${route.params.catalog}/${route.params.type}`,
+      title: route => `Rule:default-${route.params.catalog}/${route.params.type}`,
       icon: 'rt-icon-log'
     }
   },
@@ -49,7 +49,7 @@ export default () => [
     path: 'rule/path/:catalog/:type',
     component: importPage('Rule'),
     meta: {
-      title: route => `규칙:path-${route.params.catalog}/${route.params.type}`,
+      title: route => `Rule:path-${route.params.catalog}/${route.params.type}`,
       icon: 'rt-icon-log',
       key: 'path'
     }
@@ -62,8 +62,7 @@ export default () => [
     path: 'rule/fullPath/:catalog/:type',
     component: importPage('Rule'),
     meta: {
-      title: route =>
-        `규칙:fullPath-${route.params.catalog}/${route.params.type}`,
+      title: route => `Rule:fullPath-${route.params.catalog}/${route.params.type}`,
       icon: 'rt-icon-log',
       key: 'fullPath'
     }
@@ -76,8 +75,7 @@ export default () => [
     path: 'rule/custom/:catalog/:type',
     component: importPage('Rule'),
     meta: {
-      title: route =>
-        `규칙:맞춤화-${route.params.catalog}/${route.params.type}`,
+      title: route => `Rule:custom-${route.params.catalog}/${route.params.type}`,
       icon: 'rt-icon-log',
       key: route => '/rule/custom/' + route.params.catalog
     }
@@ -86,7 +84,7 @@ export default () => [
     path: 'tab-dynamic',
     component: importPage('TabDynamic'),
     meta: {
-      title: '동적 탭',
+      title: 'Dynamic tab',
       icon: 'rt-icon-log'
     }
   },
@@ -94,7 +92,7 @@ export default () => [
     path: 'page-leave',
     component: importPage('PageLeave'),
     meta: {
-      title: '페이지 떠나기 확인',
+      title: 'Confirmation of leaving the page',
       icon: 'rt-icon-contact'
     }
   },
@@ -105,7 +103,7 @@ export default () => [
       return route.fullPath + '/page1'
     },
     meta: {
-      title: '중첩 경로',
+      title: 'Nested routes',
       icon: 'rt-icon-doc'
     },
     children: [

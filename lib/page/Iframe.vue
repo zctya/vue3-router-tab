@@ -3,73 +3,92 @@
 </template>
 
 <script>
-// Iframe 路由元
-export const iframeMeta = {
-  key: route => `iframe-${route.params.src}`,
-  title: route => route.params.title,
-  icon: route => route.params.icon
-}
+  // Iframe routing element
+  export const iframeMeta = {
+    key: route => `iframe-${route.params.src}`,
+    title: route => route.params.title,
+    icon: route => route.params.icon
+  }
 
-// Iframe 页签页面
-export default {
-  name: 'Iframe',
-  inject: ['$tabs'],
-  meta: iframeMeta, // Nuxt 页面路由元
+  // Iframe tab page
+  export default {
+    inject: ['$tabs'],
 
-  props: {
-    src: String,
-    title: String,
-    icon: String
-  },
+    meta: iframeMeta, // Nuxt page routing element
 
-  computed: {
-    /**
-     * 链接安全过滤，屏蔽以下方式 XSS 攻击，并返回空白页：
-     * 1. `javascript:` 执行代码：`javascript:alert(1)`
-     * 2. `data:` Base64 链接: `'data:text/html;base64,' + window.btoa('<script>alert(1)<\/script>')`
-     */
-    url() {
-      let src = decodeURIComponent(this.src)
+    props: {
+      src: String,
+      title: String,
+      icon: String
+    },
 
-      if (/^(javascript|data):/i.test(src)) {
-        return 'about:blank'
+    computed: {
+      /**
+       * Link security filtering, blocking the following XSS attacks and returning a blank page:
+       * 1. `javascript:` Execution code: `javascript:alert(1)`
+       * 2. `data:` Base64 link: `'data:text/html;base64,' + window.btoa('<script>alert(1)<\/script>')`
+       */
+      url() {
+        let src = decodeURIComponent(this.src)
+
+        if (/^(javascript|data):/i.test(src)) {
+          return 'about:blank'
+        }
+
+        // Checking src in the allowlist
+        if (this.$tabs.allowList.length > 0) {
+          if (
+            !this.$tabs.allowList.some(v => {
+              let re
+              if (/^\/.*\/([gimy]*)$/.test(v)) {
+                const flags = v.replace(/.*\/([gimy]*)$/, '$1')
+                const pattern = v.replace(new RegExp('^/(.*?)/' + flags + '$'), '$1')
+                re = new RegExp(pattern, flags)
+              } else {
+                re = new RegExp(v)
+              }
+              return re.test(src)
+            })
+          ) {
+            return 'about:blank'
+          }
+        }
+
+        return src
+      }
+    },
+
+    async mounted() {
+      let { url, $tabs } = this
+      let { iframes } = $tabs
+
+      if (!iframes.includes(url)) {
+        iframes.push(url)
       }
 
-      return src
-    }
-  },
+      $tabs.currentIframe = url
 
-  async mounted() {
-    let { url, $tabs } = this
-    let { iframes } = $tabs
+      await this.$nextTick()
+      this.$tabs.iframeMounted(url)
+    },
 
-    if (!iframes.includes(url)) {
-      iframes.push(url)
-    }
+    activated() {
+      this.$tabs.currentIframe = this.url
+    },
 
-    $tabs.currentIframe = url
+    deactivated() {
+      this.$tabs.currentIframe = null
+    },
 
-    await this.$nextTick()
-    this.$tabs.iframeMounted(url)
-  },
+    // Remove iframe after component is destroyed
+    unmounted() {
+      let { url } = this
+      let { iframes } = this.$tabs
+      let index = iframes.indexOf(url)
 
-  activated() {
-    this.$tabs.currentIframe = this.url
-  },
-
-  deactivated() {
-    this.$tabs.currentIframe = null
-  },
-
-  // 组件销毁后移除 iframe
-  unmounted() {
-    let { url } = this
-    let { iframes } = this.$tabs
-    let index = iframes.indexOf(url)
-
-    if (index > -1) {
-      iframes.splice(index, 1)
+      if (index > -1) {
+        iframes.splice(index, 1)
+      }
     }
   }
-}
 </script>

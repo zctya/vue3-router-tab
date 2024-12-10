@@ -1,13 +1,13 @@
 export default {
   data() {
     return {
-      // 是否全屏
+      // Is it full screen?
       fullscreen: false
     }
   },
 
   watch: {
-    // 切换全屏后更新滚动
+    // Update scroll after toggling fullscreen
     async fullscreen() {
       await this.$nextTick()
       this.$tabs.adjust()

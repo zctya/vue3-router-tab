@@ -28,7 +28,8 @@ export default defineConfig(({ mode }) => {
         scss: {
           additionalData: `
             @use "src/assets/scss/variables.scss" as *;
-          `
+          `,
+          silenceDeprecations: ['legacy-js-api'],
         }
       }
     },

@@ -3,29 +3,32 @@
 </template>
 
 <script>
-export default {
-  name: 'Language',
-  data() {
-    return {
-      lang: {
-        tab: {
-          untitled: 'Untitled Page'
-        },
+  export default {
+    name: 'Language',
 
-        contextmenu: {
-          refresh: 'Refresh This',
-          refreshAll: 'Refresh All',
-          close: 'Close This',
-          closeLefts: 'Close to the Left',
-          closeRights: 'Close to the Right',
-          closeOthers: 'Close Others'
-        },
+    data() {
+      return {
+        lang: {
+          tab: {
+            untitled: 'Untitled Page'
+          },
 
-        msg: {
-          keepLastTab: 'Keep at least 1 tab'
+          contextmenu: {
+            refresh: 'Refresh This',
+            refreshAll: 'Refresh All',
+            close: 'Close This',
+            closeLefts: 'Close to the Left',
+            closeRights: 'Close to the Right',
+            closeOthers: 'Close Others',
+            pin: 'Pin',
+            unpin: 'Unpin'
+          },
+
+          msg: {
+            keepLastTab: 'Keep at least 1 tab'
+          }
         }
       }
     }
   }
-}
 </script>

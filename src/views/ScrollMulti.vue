@@ -1,17 +1,17 @@
 <script>
-import ScrollPosition from './ScrollPosition.vue'
+  import ScrollPosition from './ScrollPosition.vue'
 
-export default {
-  name: 'ScrollMulti',
+  export default {
+    name: 'ScrollMulti',
 
-  extends: ScrollPosition,
+    extends: ScrollPosition,
 
-  pageScroller: ['.custom-scroller', '.custom-scroller-1'],
+    pageScroller: ['.custom-scroller', '.custom-scroller-1'],
 
-  data() {
-    return {
-      multi: true
+    data() {
+      return {
+        multi: true
+      }
     }
   }
-}
 </script>

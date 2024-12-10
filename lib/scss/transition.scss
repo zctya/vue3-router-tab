@@ -1,4 +1,4 @@
-// transition 过渡样式
+// Transition style
 .router-tab-zoom {
   &-enter-active,
   &-leave-active {
@@ -12,9 +12,9 @@
   }
 }
 
-// 页面交换
+// Page swap
 .router-tab-swap {
-  $trans: 30px; // 移动位置
+  $trans: 30px; // Move location
 
   &-enter-active,
   &-leave-active {
