@@ -25,7 +25,7 @@
                 v-for="item in pinnedGroup"
                 :key="item.id || item.to"
                 ref="tab"
-                :data="item"
+                :tab-data="item"
                 :index="items.indexOf(item)"
                 @contextmenu.prevent="e => showContextmenu(item.id, item.pinned, items.indexOf(item), e)"
               />
@@ -56,7 +56,7 @@
               v-for="item in commonGroup"
               :key="item.id || item.to"
               ref="tab"
-              :data="item"
+              :tab-data="item"
               :index="items.indexOf(item)"
               @contextmenu.prevent="e => showContextmenu(item.id, item.pinned, items.indexOf(item), e)"
             />
@@ -392,7 +392,7 @@
 
       // Default tab
       presetTabs(tabs = this.tabs) {
-        let ids = {}
+        const ids = {}
 
         this.items = tabs
           .map(item => {
@@ -431,7 +431,7 @@
             (type === 'update' && items[matchIdx].to !== matched.$route.fullPath) // The cache is updated and the address changes
           ) {
             // Replace original tab
-            items[matchIdx] = item
+            items[matchIdx] = Object.assign(items[matchIdx], item)
           }
         } else {
           // Add new tab

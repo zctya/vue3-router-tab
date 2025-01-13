@@ -56,7 +56,7 @@
 
     props: {
       // Original data of the tab, convenient for slot to customize data
-      data: {
+      tabData: {
         type: Object,
         required: true
       },
@@ -75,8 +75,8 @@
     emits: ['contextmenu'],
 
     computed: {
-      // Extract computed properties from this.data
-      ...mapGetters('data', ['id', 'to', 'icon', 'tabClass', 'target', 'href', 'nodrag', 'pinned']),
+      // Extract computed properties from this.tabData
+      ...mapGetters('tabData', ['id', 'to', 'icon', 'tabClass', 'target', 'href', 'nodrag', 'pinned']),
 
       // class
       classList() {
@@ -104,22 +104,22 @@
 
       // Tab title
       title() {
-        return this.i18nText(this.data.title) || this.untitled
+        return this.i18nText(this.tabData.title) || this.untitled
       },
 
       // Tab tips
       tips() {
-        return this.i18nText(this.data.tips || this.data.title) || this.untitled
+        return this.i18nText(this.tabData.tips || this.tabData.title) || this.untitled
       },
 
       // Can it be closed?
       closable() {
         const { keepLastTab, items } = this.$tabs
-        return (this.pinned ? this.allowClosePinned : true) && this.data.closable !== false && !(keepLastTab && items.length < 2)
+        return (this.pinned ? this.allowClosePinned : true) && this.tabData.closable !== false && !(keepLastTab && items.length < 2)
       },
 
       unpinnable() {
-        return this.data.unpinnable != false ? true : false
+        return this.tabData.unpinnable != false
       }
     },
 
