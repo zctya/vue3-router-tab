@@ -1,6 +1,6 @@
 {
   "name": "@tenrok/vue3-router-tab",
-  "version": "0.9.25",
+  "version": "0.9.26",
   "private": false,
   "description": "Vue.js tab components for Vue 3.0+ & Vue Router 4.0+, based on Vue Router",
   "keywords": [
