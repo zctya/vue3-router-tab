@@ -13,6 +13,7 @@
   "description": "Vue.js tab components for Vue 3.0+ & Vue Router 4.0+, based on Vue Router",
   "keywords": [
     "vue3-router-tab",
+    "vue-router-tab",
     "router-tab",
     "tabs"
   ],
