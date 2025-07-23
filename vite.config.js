@@ -37,9 +37,10 @@ export default defineConfig(({ mode }) => {
     build: {
       lib: {
         entry: 'lib/index.js',
-        name: 'vue-router-tab',
-        fileName: 'vue-router-tab',
-        // formats: ['cjs', 'umd', 'es']
+        name: 'vue3-router-tab',
+        // formats: ['cjs', 'umd', 'es'],
+        formats: ['umd', 'es'],
+        fileName: (format) => `vue3-router-tab.${format}.js`
       },
       minify: false,
       rollupOptions: {
@@ -48,6 +49,7 @@ export default defineConfig(({ mode }) => {
           globals: {
             vue: 'Vue',
           },
+          exports: 'auto',
           assetFileNames: (assetInfo) => {
             return assetInfo.name === 'style.css' ? 'vue-router-tab.css' : assetInfo.name
           }

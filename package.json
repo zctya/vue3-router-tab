@@ -1,19 +1,27 @@
 {
-  "name": "@tenrok/vue3-router-tab",
-  "version": "0.9.26",
+  "name": "@zctya/vue3-router-tab",
+  "version": "0.9.28",
+  "module": "dist/vue3-router-tab.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/vue3-router-tab.es.js",
+      "require": "./dist/vue3-router-tab.umd.js"
+    },
+    "./dist/vue-router-tab.css": "./dist/vue-router-tab.css"
+  },
   "private": false,
   "description": "Vue.js tab components for Vue 3.0+ & Vue Router 4.0+, based on Vue Router",
   "keywords": [
-    "vue-router-tab",
+    "vue3-router-tab",
     "router-tab",
     "tabs"
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tenrok/vue3-router-tab.git"
+    "url": "git+https://github.com/zctya/vue3-router-tab"
   },
   "license": "MIT",
-  "author": "Jacob Koo <fantage9@gmail.com>",
+  "author": "zctya",
   "contributors": [
     {
       "name": "rat1borik",
@@ -24,7 +32,7 @@
       "url": "https://github.com/solodyagin"
     }
   ],
-  "main": "./dist/vue-router-tab.umd.js",
+  "main": "./dist/vue3-router-tab.umd.js",
   "files": [
     "dist/"
   ],
