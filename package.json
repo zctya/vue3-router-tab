@@ -1,6 +1,6 @@
 {
   "name": "@zctya/vue3-router-tab",
-  "version": "0.9.28",
+  "version": "0.9.29",
   "module": "dist/vue3-router-tab.es.js",
   "exports": {
     ".": {
